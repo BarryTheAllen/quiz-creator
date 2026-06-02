@@ -1,0 +1,26 @@
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    padding: 16px 60px;
+    background: #fff;
+}
+
+.logo {
+    font-size: 30px;
+    font-weight: 600;
+    color: black;
+}
+
+.nav {
+    display: flex;
+    gap: 20px;
+}
+
+.navList {
+    display: flex;
+    gap: 20px;
+    list-style: none;
+    color: black;
+}
