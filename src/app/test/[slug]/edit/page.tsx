@@ -10,8 +10,9 @@ type EditorTest = {
   slug: string;
   creator: { toString: () => string };
   questions: {
+    id?: string;
     text: string;
-    answers: { text: string; isCorrect: boolean }[];
+    answers: { id?: string; text: string; isCorrect: boolean }[];
   }[];
 };
 
@@ -35,8 +36,10 @@ export default async function EditTestPage({
   const initialData = {
     title: test.title,
     questions: test.questions.map((q) => ({
+      id: q.id,
       text: q.text,
       answers: q.answers.map((a) => ({
+        id: a.id,
         text: a.text,
         isCorrect: a.isCorrect,
       })),
