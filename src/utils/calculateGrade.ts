@@ -1,4 +1,3 @@
-// Russian 5-point grading scale based on the share of correct answers.
 export function calculateGrade(correct: number, total: number): number {
   if (total <= 0) return 2;
 

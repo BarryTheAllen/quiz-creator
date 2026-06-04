@@ -4,9 +4,9 @@ const testSchema = new Schema({
   title: { type: String, required: true },
   slug: { type: String, required: true, unique: true, lowercase: true },
   questions: [{
-    text: { type: String, required: true },
+    text: { type: String, default: "" },
     answers: [{
-      text: { type: String, required: true },
+      text: { type: String, default: "" },
       isCorrect: { type: Boolean, default: false }
     }]
   }],

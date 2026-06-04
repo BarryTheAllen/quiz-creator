@@ -14,7 +14,6 @@ export async function POST(req: Request) {
   try {
     await dbConnect();
 
-    // 1. Read the submitted form data.
     const formData = await req.formData();
     const studentName = (formData.get("studentName") as string)?.trim();
 
@@ -25,7 +24,6 @@ export async function POST(req: Request) {
       );
     }
 
-    // answers[<questionIndex>] -> selected option index
     const answers = Object.fromEntries(
       Array.from(formData.entries())
         .filter(([key]) => key.startsWith("answers["))
@@ -35,13 +33,11 @@ export async function POST(req: Request) {
         ])
     );
 
-    // 2. Find the test.
     const test = await Test.findOne({ slug });
     if (!test) {
       return NextResponse.json({ error: "Test not found" }, { status: 404 });
     }
 
-    // 3. Count correct answers.
     let correctCount = 0;
     (test.questions as QuestionDoc[]).forEach((q, idx) => {
       const selectedIdx = Number(answers[idx]);
@@ -51,7 +47,6 @@ export async function POST(req: Request) {
     const total = test.questions.length;
     const grade = calculateGrade(correctCount, total);
 
-    // 4. Persist the submission.
     await Submission.create({
       test: test._id,
       studentName,
@@ -64,9 +59,6 @@ export async function POST(req: Request) {
       grade,
     });
 
-    // 5. Redirect to the result page. Status 303 turns the POST into a GET.
-    //    A relative Location keeps the student on the host they came from and
-    //    avoids leaking the server's internal bind address (e.g. 0.0.0.0).
     const query = new URLSearchParams({
       grade: String(grade),
       total: String(total),
