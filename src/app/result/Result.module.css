@@ -1,0 +1,80 @@
+.page {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex: 1;
+  padding: 40px 20px;
+}
+
+.card {
+  width: 100%;
+  max-width: 420px;
+  padding: 40px;
+  text-align: center;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+}
+
+.heading {
+  font-size: 24px;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+
+.name {
+  color: #666;
+  margin-bottom: 24px;
+}
+
+.gradeBox {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  margin: 24px auto;
+  width: 120px;
+  height: 120px;
+  justify-content: center;
+  border-radius: 50%;
+  background: #f1f5f9;
+  border: 4px solid #cbd5e1;
+}
+
+.gradeBox[data-grade="5"] {
+  background: #dcfce7;
+  border-color: #16a34a;
+}
+
+.gradeBox[data-grade="4"] {
+  background: #e0f2fe;
+  border-color: #2563eb;
+}
+
+.gradeBox[data-grade="3"] {
+  background: #fef9c3;
+  border-color: #ca8a04;
+}
+
+.gradeBox[data-grade="2"] {
+  background: #fee2e2;
+  border-color: #dc2626;
+}
+
+.gradeLabel {
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #475569;
+}
+
+.grade {
+  font-size: 48px;
+  font-weight: 800;
+  line-height: 1;
+}
+
+.score {
+  font-size: 16px;
+  color: #334155;
+}

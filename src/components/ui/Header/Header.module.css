@@ -5,12 +5,13 @@
     width: 100%;
     padding: 16px 60px;
     background: #fff;
+    border-bottom: 1px solid #eef2f7;
 }
 
 .logo {
-    font-size: 30px;
-    font-weight: 600;
-    color: black;
+    font-size: 26px;
+    font-weight: 700;
+    color: #1e293b;
 }
 
 .nav {
@@ -20,7 +21,37 @@
 
 .navList {
     display: flex;
+    align-items: center;
     gap: 20px;
     list-style: none;
     color: black;
+}
+
+.navLink {
+    color: #334155;
+    font-weight: 500;
+}
+
+.navLink:hover {
+    color: #2563eb;
+}
+
+.logout {
+    background: none;
+    border: 1px solid #cbd5e1;
+    border-radius: 6px;
+    padding: 6px 14px;
+    color: #334155;
+    font-size: 15px;
+    cursor: pointer;
+}
+
+.logout:hover {
+    background: #f1f5f9;
+}
+
+@media (max-width: 600px) {
+    .header {
+        padding: 14px 20px;
+    }
 }

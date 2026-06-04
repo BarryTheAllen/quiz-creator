@@ -1,16 +1,52 @@
-import styles from './Header.module.css';
-import Link from 'next/link';
+"use client";
 
-const Header = ({  }) => {
+import styles from "./Header.module.css";
+import Link from "next/link";
+import { useSession, signOut } from "next-auth/react";
+
+const Header = () => {
+  const { status } = useSession();
+  const isAuthed = status === "authenticated";
+
   return (
     <header className={styles.header}>
-        <h1 className={styles.logo}>Quiz creator</h1>
-        <nav className={styles.nav}>
-            <ul className={styles.navList}>
-                <li className={styles.navItem}><Link href="/dashboard" className={styles.navLink}>Tests</Link></li>
-                <li className={styles.navItem}><Link href="/login" className={styles.navLink}>Login</Link></li>
-            </ul>
-        </nav>
+      <Link href="/" className={styles.logo}>
+        Quiz creator
+      </Link>
+      <nav className={styles.nav}>
+        <ul className={styles.navList}>
+          {isAuthed ? (
+            <>
+              <li className={styles.navItem}>
+                <Link href="/dashboard" className={styles.navLink}>
+                  Мои тесты
+                </Link>
+              </li>
+              <li className={styles.navItem}>
+                <button
+                  className={styles.logout}
+                  onClick={() => signOut({ callbackUrl: "/" })}
+                >
+                  Выйти
+                </button>
+              </li>
+            </>
+          ) : (
+            <>
+              <li className={styles.navItem}>
+                <Link href="/login" className={styles.navLink}>
+                  Вход
+                </Link>
+              </li>
+              <li className={styles.navItem}>
+                <Link href="/register" className={styles.navLink}>
+                  Регистрация
+                </Link>
+              </li>
+            </>
+          )}
+        </ul>
+      </nav>
     </header>
   );
 };

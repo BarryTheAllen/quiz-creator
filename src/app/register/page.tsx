@@ -1,44 +1,80 @@
 "use client";
-import Link from 'next/link';
-import styles from './Register.module.css';
-import { useForm } from 'react-hook-form';
+import Link from "next/link";
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import styles from "./Register.module.css";
+import { useForm } from "react-hook-form";
 
 type RegisterFormData = {
-    name: string;
-    email: string;
-    password: string;
-    confirmPassword: string;
+  name: string;
+  email: string;
+  password: string;
+  confirmPassword: string;
 };
 
 const Component = () => {
-    const {handleSubmit, register} = useForm<RegisterFormData>();
-    const registerUser = async (registerData: RegisterFormData) => {
-        try {            
-            const response = await fetch('/api/auth/register', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(registerData),
-            });
-            if (response.ok) {
-                // Handle successful registration, e.g., redirect to login page
-            } else {
-                // Handle registration error, e.g., show error message
-            }
-        } catch (error) {
-            console.error('Registration error:', error);
-        }
+  const router = useRouter();
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
+  const { handleSubmit, register } = useForm<RegisterFormData>();
+
+  const registerUser = async (registerData: RegisterFormData) => {
+    setError("");
+    setLoading(true);
+    try {
+      const response = await fetch("/api/auth/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(registerData),
+      });
+
+      if (response.ok) {
+        router.push("/login");
+      } else {
+        const body = await response.json().catch(() => ({}));
+        setError(body.message ?? "Не удалось зарегистрироваться");
+      }
+    } catch (err) {
+      console.error("Registration error:", err);
+      setError("Что-то пошло не так");
+    } finally {
+      setLoading(false);
     }
+  };
+
   return (
     <form className={styles.form} onSubmit={handleSubmit(registerUser)}>
-      <input type="text" placeholder='Name' className={styles.input} {...register('name')} />
-      <input type="email" placeholder="Email" className={styles.input} {...register('email')} />
-      <input type="password" placeholder="Password" className={styles.input} {...register('password')} />
-      <input type="password" placeholder="Confirm Password" className={styles.input} {...register('confirmPassword')} />
-      <button type="submit" className={styles.button}>Register</button>
+      <h1 className={styles.heading}>Регистрация преподавателя</h1>
+      <input
+        type="text"
+        placeholder="Имя"
+        className={styles.input}
+        {...register("name", { required: true })}
+      />
+      <input
+        type="email"
+        placeholder="Email"
+        className={styles.input}
+        {...register("email", { required: true })}
+      />
+      <input
+        type="password"
+        placeholder="Пароль"
+        className={styles.input}
+        {...register("password", { required: true })}
+      />
+      <input
+        type="password"
+        placeholder="Повторите пароль"
+        className={styles.input}
+        {...register("confirmPassword", { required: true })}
+      />
+      {error && <p className={styles.error}>{error}</p>}
+      <button type="submit" className={styles.button} disabled={loading}>
+        {loading ? "Создание…" : "Зарегистрироваться"}
+      </button>
       <Link href="/login" className={styles.link}>
-        Already have an account? Login
+        Уже есть аккаунт? Войти
       </Link>
     </form>
   );
