@@ -1,12 +1,10 @@
-"use server"
+
 
 import Link from "next/link";
-import { getServerSession } from "next-auth";
-import authOptions from "@/lib/auth/nextAuth";
+
 import styles from "./page.module.css";
 
-const Component = async () => {
-  const session = await getServerSession(authOptions);
+const Component = () => {
 
   return (
     <main className={styles.hero}>
@@ -15,23 +13,6 @@ const Component = async () => {
         Соберите тест из вопросов с вариантами ответов, поделитесь ссылкой — и
         ученики пройдут его без регистрации. А вы увидите результаты и оценки.
       </p>
-
-      <div className={styles.actions}>
-        {session ? (
-          <Link href="/dashboard" className={styles.primary}>
-            Перейти к моим тестам
-          </Link>
-        ) : (
-          <>
-            <Link href="/register" className={styles.primary}>
-              Начать бесплатно
-            </Link>
-            <Link href="/login" className={styles.secondary}>
-              Войти
-            </Link>
-          </>
-        )}
-      </div>
 
       <ol className={styles.steps}>
         <li>
