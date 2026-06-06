@@ -12,8 +12,9 @@ interface ITestEditorProps {
   test: ITest;
 }
 
-const emptyAnswer = (): IAnswer => ({ text: "", isCorrect: false });
+const emptyAnswer = (): IAnswer => ({ id: Date.now().toString() + Math.random().toString(36), text: "", isCorrect: false });
 const emptyQuestion = (): IQuestion => ({
+  id: Date.now().toString() + Math.random().toString(36),
   text: "",
   answers: [emptyAnswer(), emptyAnswer()],
 });
@@ -24,13 +25,13 @@ export default function TestEditor({ test }: ITestEditorProps) {
   const [questions, setQuestions] = useState(test.questions);
   const [isSaving, setIsSaving] = useState(false);
 
-  const addQuestion = () => {
+   const addQuestion = () => {
     if (questions.length >= MAX_QUESTIONS) return;
     setQuestions([...questions, emptyQuestion()]);
   };
 
-  const deleteQuestion = (question: IQuestion) => {
-    setQuestions(prev => prev.filter(q => (q.text !== question.text)))
+  const deleteQuestion = (questionId: string) => {
+    setQuestions(prev => prev.filter(q => q.id !== questionId))
   }
 
   const addAnswer = (questionIndex: number) => {
@@ -48,6 +49,20 @@ export default function TestEditor({ test }: ITestEditorProps) {
     );
   };
 
+  const deleteAnswer = (questionIndex: number, answerId: string) => {
+    setQuestions(
+      questions.map((question, index) => {
+        if (index !== questionIndex) {
+          return question;
+        }
+
+        return {
+          ...question,
+          answers: question.answers.filter(answer => answer.id !== answerId),
+        };
+      })
+    );
+  };
   const saveTest = async () => {
     setIsSaving(true);
 
@@ -68,7 +83,7 @@ export default function TestEditor({ test }: ITestEditorProps) {
   };
 
   return (
-    <div className={styles.form}>
+     <div className={styles.form}>
       <div className={styles.section}>
         <label className={styles.label} htmlFor="title">
           Название теста
@@ -89,10 +104,10 @@ export default function TestEditor({ test }: ITestEditorProps) {
         )}
 
         {questions.map((question, questionIndex) => (
-          <div key={questionIndex} className={styles.questionCard}>
+          <div key={question.id} className={styles.questionCard}>
             <div className={styles.questionHeader}>
               <div className={styles.questionTitle}>Вопрос {questionIndex + 1}</div>
-              <button onClick={() => deleteQuestion(question)}>Удалить вопрос</button>
+              <button onClick={() => deleteQuestion(question.id)}>Удалить вопрос</button>
               <button
                 className={`${styles.button} ${styles.smallButton}`}
                 type="button"
@@ -103,75 +118,53 @@ export default function TestEditor({ test }: ITestEditorProps) {
               </button>
             </div>
 
-            <input
-              className={styles.input}
-              type="text"
+            <textarea
+              className={styles.questionInput}
               value={question.text}
-              onChange={(event) =>
-                setQuestions(
-                  questions.map((currentQuestion, index) =>
-                    index === questionIndex
-                      ? { ...currentQuestion, text: event.target.value }
-                      : currentQuestion
-                  )
-                )
-              }
-              placeholder="Вопрос"
+              onChange={(e) => {
+                const newQuestions = [...questions];
+                newQuestions[questionIndex].text = e.target.value;
+                setQuestions(newQuestions);
+              }}
+              placeholder="Формулировка вопроса"
             />
 
             <div className={styles.answers}>
               {question.answers.map((answer, answerIndex) => (
-                <div key={answerIndex} className={styles.answerRow}>
+                <div key={answer.id} className={styles.answerRow}>
                   <input
-                    className={styles.input}
                     type="text"
                     value={answer.text}
-                    onChange={(event) =>
-                      setQuestions(
-                        questions.map((currentQuestion, index) =>
-                          index === questionIndex
-                            ? {
-                                ...currentQuestion,
-                                answers: currentQuestion.answers.map(
-                                  (currentAnswer, currentAnswerIndex) =>
-                                    currentAnswerIndex === answerIndex
-                                      ? { ...currentAnswer, text: event.target.value }
-                                      : currentAnswer
-                                ),
-                              }
-                            : currentQuestion
-                        )
-                      )
-                    }
-                    placeholder="Ответ"
+                    onChange={(e) => {
+                      const newQuestions = [...questions];
+                      newQuestions[questionIndex].answers[answerIndex].text = e.target.value;
+                      setQuestions(newQuestions);
+                    }}
+                    placeholder={`Ответ ${answerIndex + 1}`}
+                    className={styles.answerInput}
                   />
                   <label className={styles.checkboxLabel}>
+                    Правильный
                     <input
                       type="checkbox"
                       checked={answer.isCorrect}
-                      onChange={(event) =>
-                        setQuestions(
-                          questions.map((currentQuestion, index) =>
-                            index === questionIndex
-                              ? {
-                                  ...currentQuestion,
-                                  answers: currentQuestion.answers.map(
-                                    (currentAnswer, currentAnswerIndex) =>
-                                      currentAnswerIndex === answerIndex
-                                        ? {
-                                            ...currentAnswer,
-                                            isCorrect: event.target.checked,
-                                          }
-                                        : currentAnswer
-                                  ),
-                                }
-                              : currentQuestion
-                          )
-                        )
-                      }
+                      onChange={(e) => {
+                        const newQuestions = [...questions];
+                        // Reset other correct answers in the same question
+                        newQuestions[questionIndex].answers.forEach(ans => ans.isCorrect = false);
+                        newQuestions[questionIndex].answers[answerIndex].isCorrect = e.target.checked;
+                        setQuestions(newQuestions);
+                      }}
+                      className={styles.checkbox}
                     />
-                    Верный
                   </label>
+                  <button
+                    type="button"
+                    className={styles.removeAnswerButton}
+                    onClick={() => deleteAnswer(questionIndex, answer.id)}
+                  >
+                    Удалить
+                  </button>
                 </div>
               ))}
             </div>
@@ -180,16 +173,21 @@ export default function TestEditor({ test }: ITestEditorProps) {
       </div>
 
       <div className={styles.actions}>
-        <button className={styles.button} type="button" onClick={saveTest}>
-          {isSaving ? "Сохраняю..." : "Сохранить"}
-        </button>
         <button
-          className={`${styles.button} ${styles.secondaryButton}`}
           type="button"
+          className={styles.button}
           onClick={addQuestion}
           disabled={questions.length >= MAX_QUESTIONS}
         >
           Добавить вопрос
+        </button>
+        <button
+          type="button"
+          className={styles.button}
+          onClick={saveTest}
+          disabled={isSaving}
+        >
+          {isSaving ? 'Сохранение...' : 'Сохранить'}
         </button>
       </div>
     </div>
