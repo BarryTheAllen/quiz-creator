@@ -1,9 +1,8 @@
 import styles from "./page.module.css";
 
-const HomePage = () => {
-
+export default function Home() {
   return (
-    <main className={styles.hero}>
+      <main className={styles.hero}>
       <h1 className={styles.title}>Создавайте тесты для своих учеников</h1>
       <p className={styles.subtitle}>
         Соберите тест из вопросов с вариантами ответов, поделитесь ссылкой — и
@@ -25,7 +24,5 @@ const HomePage = () => {
         </li>
       </ol>
     </main>
-  );
-};
-
-export default HomePage;
+  )
+}
