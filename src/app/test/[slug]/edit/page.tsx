@@ -32,7 +32,6 @@ export default async function EditTestPage({
   if (!test) notFound();
   if (test.creator.toString() !== session.user.id) redirect("/dashboard");
 
-  // Strip Mongo internals before handing data to the client form.
   const initialData = {
     title: test.title,
     questions: test.questions.map((q) => ({
