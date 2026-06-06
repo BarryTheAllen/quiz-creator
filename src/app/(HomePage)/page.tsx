@@ -1,10 +1,6 @@
-
-
-import Link from "next/link";
-
 import styles from "./page.module.css";
 
-const Component = () => {
+const HomePage = () => {
 
   return (
     <main className={styles.hero}>
@@ -32,4 +28,4 @@ const Component = () => {
   );
 };
 
-export default Component;
+export default HomePage;
