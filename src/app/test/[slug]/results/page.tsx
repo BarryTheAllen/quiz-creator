@@ -72,7 +72,7 @@ export default async function ResultsPage({
           <tbody>
             {submissions.map((s) => (
               <tr key={s._id.toString()}>
-                <td>{s.studentName}</td>
+                <td className={styles.studname}>{s.studentName}</td>
                 <td>
                   {s.score} / {s.total}
                 </td>
