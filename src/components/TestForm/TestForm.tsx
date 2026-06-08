@@ -17,13 +17,24 @@ type TestFormProps = {
 };
 
 type SaveStatus = "idle" | "saving" | "saved" | "error";
+type GenerateStatus = "idle" | "generating" | "error";
+
+type GeneratedQuestion = {
+  text: string;
+  answers: { text: string; isCorrect: boolean }[];
+};
 
 const uid = () => crypto.randomUUID();
 
 const TestForm = ({ slug, initialData }: TestFormProps) => {
   const router = useRouter();
   const [status, setStatus] = useState<SaveStatus>("idle");
+  const [generateStatus, setGenerateStatus] = useState<GenerateStatus>("idle");
+  const [generateError, setGenerateError] = useState("");
   const [copied, setCopied] = useState(false);
+  const [aiTopic, setAiTopic] = useState("");
+  const [aiCount, setAiCount] = useState(5);
+  const [aiDifficulty, setAiDifficulty] = useState("Средний");
 
   const [title, setTitle] = useState(initialData.title);
   const [questions, setQuestions] = useState<Question[]>(() =>
@@ -131,6 +142,57 @@ const TestForm = ({ slug, initialData }: TestFormProps) => {
     setTimeout(() => setCopied(false), 2000);
   };
 
+  const handleGenerate = async () => {
+    const topic = aiTopic.trim();
+    if (!topic) {
+      setGenerateError("Введите тему теста");
+      setGenerateStatus("error");
+      return;
+    }
+
+    setGenerateError("");
+    setGenerateStatus("generating");
+
+    try {
+      const res = await fetch(`/api/test/${slug}/generate`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          topic,
+          count: aiCount,
+          difficulty: aiDifficulty,
+        }),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        setGenerateError(data.error ?? "Не удалось сгенерировать вопросы");
+        setGenerateStatus("error");
+        return;
+      }
+
+      const generatedQuestions = (data.questions as GeneratedQuestion[]).map(
+        (question) => ({
+          id: uid(),
+          text: question.text,
+          answers: question.answers.map((answer) => ({
+            id: uid(),
+            text: answer.text,
+            isCorrect: answer.isCorrect,
+          })),
+        })
+      );
+
+      setQuestions((prev) => [...prev, ...generatedQuestions]);
+      if (title.trim() === "Новый тест") setTitle(topic);
+      setGenerateStatus("idle");
+    } catch {
+      setGenerateError("Не удалось подключиться к генератору");
+      setGenerateStatus("error");
+    }
+  };
+
   return (
     <form className={styles.form} onSubmit={handleSave}>
       <div className={styles.topbar}>
@@ -164,6 +226,57 @@ const TestForm = ({ slug, initialData }: TestFormProps) => {
           required
         />
       </div>
+
+      <section className={styles.aiPanel}>
+        <div>
+          <h2 className={styles.aiTitle}>Сгенерировать вопросы</h2>
+          <p className={styles.aiText}>
+            Добавьте черновик вопросов по теме, а затем отредактируйте ответы.
+          </p>
+        </div>
+        <div className={styles.aiGrid}>
+          <label className={styles.aiField}>
+            <span>Тема</span>
+            <input
+              value={aiTopic}
+              onChange={(e) => setAiTopic(e.target.value)}
+              placeholder="Например: Древний Египет"
+            />
+          </label>
+          <label className={styles.aiField}>
+            <span>Вопросов</span>
+            <input
+              type="number"
+              min="1"
+              max="10"
+              value={aiCount}
+              onChange={(e) => setAiCount(Number(e.target.value))}
+            />
+          </label>
+          <label className={styles.aiField}>
+            <span>Сложность</span>
+            <select
+              value={aiDifficulty}
+              onChange={(e) => setAiDifficulty(e.target.value)}
+            >
+              <option>Лёгкий</option>
+              <option>Средний</option>
+              <option>Сложный</option>
+            </select>
+          </label>
+          <button
+            type="button"
+            className={styles.generate}
+            onClick={handleGenerate}
+            disabled={generateStatus === "generating"}
+          >
+            {generateStatus === "generating" ? "Генерация…" : "Добавить вопросы"}
+          </button>
+        </div>
+        {generateStatus === "error" && (
+          <p className={styles.errorMsg}>{generateError}</p>
+        )}
+      </section>
 
       {questions.map((q, qIndex) => {
         const hasCorrect = q.answers.some((a) => a.isCorrect);

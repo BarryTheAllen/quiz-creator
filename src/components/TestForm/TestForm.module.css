@@ -105,6 +105,61 @@
   outline: 3px solid rgba(37, 99, 235, 0.14);
 }
 
+.aiPanel {
+  display: grid;
+  gap: 16px;
+  padding: 18px;
+  margin-bottom: 20px;
+  border: 1px solid #bfdbfe;
+  border-radius: var(--radius);
+  background: linear-gradient(135deg, #eff6ff, #ffffff);
+}
+
+.aiTitle {
+  color: var(--text-dark);
+  font-size: 18px;
+  font-weight: 800;
+}
+
+.aiText {
+  margin-top: 5px;
+  color: var(--text-muted);
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.aiGrid {
+  display: grid;
+  grid-template-columns: minmax(180px, 1fr) 120px 150px auto;
+  gap: 10px;
+  align-items: end;
+}
+
+.aiField {
+  display: grid;
+  gap: 6px;
+  color: var(--text-muted);
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.aiField input,
+.aiField select {
+  width: 100%;
+  min-height: 42px;
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: #ffffff;
+  color: var(--text-dark);
+}
+
+.aiField input:focus,
+.aiField select:focus {
+  border-color: var(--primary);
+  outline: 3px solid rgba(37, 99, 235, 0.14);
+}
+
 .question {
   display: grid;
   gap: 14px;
@@ -173,6 +228,7 @@
 .removeAnswer,
 .addAnswer,
 .addQuestion,
+.generate,
 .save,
 .delete {
   display: inline-flex;
@@ -247,6 +303,22 @@
   border-color: var(--primary);
   background: var(--primary-soft);
   color: var(--primary-hover);
+}
+
+.generate {
+  padding: 10px 14px;
+  border: 0;
+  background: var(--text-dark);
+  color: #ffffff;
+  white-space: nowrap;
+}
+
+.generate:hover:not(:disabled) {
+  background: #0f172a;
+}
+
+.generate:disabled {
+  opacity: 0.65;
 }
 
 .footer {
@@ -324,9 +396,14 @@
 
   .save,
   .delete,
+  .generate,
   .linkButton,
   .addAnswer {
     width: 100%;
+  }
+
+  .aiGrid {
+    grid-template-columns: 1fr;
   }
 }
 
