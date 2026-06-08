@@ -1,15 +1,32 @@
 .page {
-  width: min(920px, calc(100vw - 32px));
-  margin: 0 auto;
-  padding: 32px 0;
+  max-width: 1200px;
+  margin: 40px auto;
+  padding: 0 20px;
+  position: relative;
+  z-index: 1;
+}
+
+@media (max-width: 768px) {
+  .page {
+    margin: 20px auto;
+    padding: 0 16px;
+  }
 }
 
 .header {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 16px;
   margin-bottom: 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+@media (max-width: 480px) {
+  .header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
 }
 
 .eyebrow {
@@ -20,16 +37,40 @@
 
 .title {
   font-size: 28px;
-  line-height: 1.2;
+  font-weight: 700;
+  color: var(--text-dark);
+  font-family: var(--font-sans);
 }
 
-.backLink {
-  flex: 0 0 auto;
-  padding: 10px 14px;
-  border: 1px solid #d6dde8;
-  border-radius: 8px;
-  color: #334155;
-  font-size: 14px;
+@media (max-width: 768px) {
+  .title {
+    font-size: 24px;
+  }
+}
+
+.backBtn {
+  padding: 10px 20px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  color: var(--text-dark);
+  font-size: 15px;
+  font-weight: 500;
+  font-family: var(--font-sans);
+  cursor: pointer;
+  transition: background-color 0.18s ease, border-color 0.18s ease;
+}
+
+.backBtn:hover {
+  background: var(--surface-muted);
+  border-color: var(--border-strong);
+}
+
+@media (max-width: 480px) {
+  .backBtn {
+    width: 100%;
+    text-align: center;
+  }
 }
 
 .form {

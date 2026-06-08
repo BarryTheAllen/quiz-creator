@@ -51,7 +51,7 @@ const TestForm = ({ slug, initialData }: TestFormProps) => {
       },
     ]);
 
-  // Удаляем по id, а не по тексту.
+
   const removeQuestion = (qId: string) =>
     setQuestions((prev) => prev.filter((q) => q.id !== qId));
 
@@ -67,7 +67,7 @@ const TestForm = ({ slug, initialData }: TestFormProps) => {
       )
     );
 
-  // Удаляем по id, а не по тексту.
+
   const removeAnswer = (qId: string, aId: string) =>
     setQuestions((prev) =>
       prev.map((q) =>

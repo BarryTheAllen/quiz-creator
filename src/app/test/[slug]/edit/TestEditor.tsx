@@ -150,7 +150,6 @@ export default function TestEditor({ test }: ITestEditorProps) {
                       checked={answer.isCorrect}
                       onChange={(e) => {
                         const newQuestions = [...questions];
-                        // Reset other correct answers in the same question
                         newQuestions[questionIndex].answers.forEach(ans => ans.isCorrect = false);
                         newQuestions[questionIndex].answers[answerIndex].isCorrect = e.target.checked;
                         setQuestions(newQuestions);

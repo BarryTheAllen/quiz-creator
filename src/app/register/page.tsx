@@ -71,6 +71,7 @@ const Component = () => {
         {...register("confirmPassword")}
       />
       {errors.confirmPassword && <p className={styles.error}>{errors.confirmPassword.message}</p>}
+      {error && <p className={styles.error}>{error}</p>}
       <button type="submit" className={styles.button} disabled={loading}>
         {loading ? "Создание…" : "Зарегистрироваться"}
       </button>

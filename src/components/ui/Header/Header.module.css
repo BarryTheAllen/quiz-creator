@@ -1,57 +1,73 @@
 .header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    width: 100%;
-    padding: 16px 60px;
-    background: #fff;
-    border-bottom: 1px solid #eef2f7;
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  padding: 14px 56px;
+  background: rgba(255, 255, 255, 0.92);
+  border-bottom: 1px solid var(--border);
 }
 
 .logo {
-    font-size: 26px;
-    font-weight: 700;
-    color: #1e293b;
-}
-
-.nav {
-    display: flex;
-    gap: 20px;
+  color: var(--text-dark);
+  font-size: 22px;
+  font-weight: 800;
+  letter-spacing: 0;
 }
 
 .navList {
-    display: flex;
-    align-items: center;
-    gap: 20px;
-    list-style: none;
-    color: black;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  list-style: none;
 }
 
-.navLink {
-    color: #334155;
-    font-weight: 500;
+.navLink,
+.logout {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 38px;
+  padding: 8px 12px;
+  border-radius: var(--radius);
+  color: var(--text-muted);
+  font-size: 14px;
+  font-weight: 600;
+  transition: background-color 0.18s ease, color 0.18s ease;
 }
 
-.navLink:hover {
-    color: #2563eb;
+.navLink:hover,
+.logout:hover {
+  background: var(--surface-muted);
+  color: var(--text-dark);
 }
 
 .logout {
-    background: none;
-    border: 1px solid #cbd5e1;
-    border-radius: 6px;
-    padding: 6px 14px;
-    color: #334155;
-    font-size: 15px;
-    cursor: pointer;
+  border: 1px solid var(--border);
+  background: var(--surface);
 }
 
-.logout:hover {
-    background: #f1f5f9;
+@media (max-width: 768px) {
+  .header {
+    padding: 12px 20px;
+  }
+
+  .logo {
+    font-size: 19px;
+  }
 }
 
-@media (max-width: 600px) {
-    .header {
-        padding: 14px 20px;
-    }
+@media (max-width: 520px) {
+  .header {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .navList {
+    flex-wrap: wrap;
+  }
 }
